@@ -16,8 +16,8 @@
     "axios": "^0.17.1",
     "mavon-editor": "^2.4.16",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "vuetify": "^0.17.7"
+    "vue-loading-overlay": "^2.0.4",
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
