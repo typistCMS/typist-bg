@@ -6,14 +6,14 @@ import router from './router'
 import axios from 'axios'
 import mavonEditor from 'mavon-editor'
 // Import component
-import Loading from 'vue-loading-overlay';
+import Loading from 'vue-loading-overlay'
 // Import stylesheet
-import 'vue-loading-overlay/dist/vue-loading.min.css';
-// Init plugin
-Vue.use(Loading);
+import 'vue-loading-overlay/dist/vue-loading.min.css'
 import 'mavon-editor/dist/css/index.css'
-
+// Init plugin
+Vue.use(Loading)
 Vue.use(mavonEditor)
+
 Vue.config.productionTip = false
 Vue.prototype.$http = axios.create({
   baseURL: 'http://typist.test/',

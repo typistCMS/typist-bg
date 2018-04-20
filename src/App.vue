@@ -10,6 +10,9 @@
         <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/posts">
             <a class="pure-menu-link">Posts</a>
         </router-link>
+        <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/comments">
+            <a class="pure-menu-link">Comments</a>
+        </router-link>
       </ul>
     </div>
     <main>
@@ -39,7 +42,6 @@ export default {
     display: flex;
     font-family: 'Raleway', sans-serif;
   }
-
 
   .sidebar {
     position: fixed;

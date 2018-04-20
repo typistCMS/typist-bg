@@ -60,8 +60,7 @@ export default {
       this.$http.get('post/' + this.$route.params.id).then((response) => {
         this.post = response.data
         this.retriveRevisions()
-      }).catch((error) => {
-        console.log(error)
+      }).catch(({response}) => {
       })
     },
     retriveRevisions () {
@@ -80,8 +79,10 @@ export default {
             'user_name': this.post.last_edit_by,
             'created_at': this.post.updated_at
           })
-        }).catch((error) => {
-          console.log(error)
+        }).catch(({response}) => {
+          if (response.status === 401) {
+            this.$router.push('/login')
+          }
         })
       } else {
         this.$http.post('posts', this.post).then(({data}) => {
@@ -92,8 +93,10 @@ export default {
             'user_name': this.post.last_edit_by,
             'created_at': this.post.updated_at
           })
-        }).catch((error) => {
-          console.log(error)
+        }).catch(({response}) => {
+          if (response.status === 401) {
+            this.$router.push('/login')
+          }
         })
       }
     },
