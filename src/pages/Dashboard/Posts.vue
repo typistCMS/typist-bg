@@ -1,10 +1,14 @@
 <template>
   <div class="posts">
     <h1>Posts</h1>
-    <router-link tag="button" to="/post">Add</router-link>
-    <button @click="getPosts(1)" v-if="isTrashed">Published</button>
-    <button @click="showDeleted" v-else>Trashed</button>
-    <category-selector v-model="categoryId"></category-selector>
+    <div class="toolbar pure-form">
+      <div class="pure-button-group" role="group">
+        <router-link tag="button" to="/post" class="pure-button">Add</router-link>
+        <button @click="getPosts(1)" v-if="isTrashed" class="pure-button">Published</button>
+        <button @click="showDeleted" class="pure-button" v-else>Trashed</button>
+      </div>
+      <category-selector v-model="categoryId"></category-selector>
+    </div>
     <table class="pure-table">
       <thead>
         <tr>
@@ -22,18 +26,25 @@
            <td> {{ post.created_at }} </td>
            <td> {{ post.updated_at }} </td>
            <td v-if="isTrashed">
-             <button click="permanantDelete">Delete Permanantly</button>
-             <button click="recover" @click="restoreDeleted(index, post.id)">Recover</button></td>
+             <div class="pure-button-group" role="group">
+               <button class="pure-button" click="permanantDelete">Delete Permanantly</button>
+               <button class="pure-button" click="recover" @click="restoreDeleted(index, post.id)">Recover</button>
+             </div>
+           </td>
            <td v-else>
-             <button class="button-error" @click="edit(post.id)">Edit</button>
-             <button class="button-error">Delete</button>
+             <div class="pure-button-group" role="group">
+               <button class="pure-button" @click="edit(post.id)">Edit</button>
+               <button class="pure-button">Delete</button>
+             </div>
            </td>
          </tr>
         </tbody>
       </table>
-      <button>&lt;&lt;</button>
-      <router-link tag="button" :to="'/posts/' + n" v-for="n in 10" :key="n">{{ n }}</router-link>
-      <button>&gt;&gt;</button>
+      <div class="pure-button-group">
+        <button class="pure-button">&lt;&lt;</button>
+        <router-link class="pure-button" tag="button" :to="'/posts/' + n" v-for="n in 10" :key="n">{{ n }}</router-link>
+        <button class="pure-button">&gt;&gt;</button>
+      </div>
   </div>
 </template>
 
@@ -107,4 +118,13 @@ export default {
 </script>
 
 <style>
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+div.posts {
+  display: flex;
+  flex-direction: column;
+}
 </style>
