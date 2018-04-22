@@ -39,7 +39,6 @@ export default {
 </script>
 <style>
   body {
-    display: flex;
     font-family: 'Raleway', sans-serif;
   }
 
@@ -87,6 +86,7 @@ export default {
 
     main {
       margin-left: 256px;
+      padding: 1em;
     }
   }
 
@@ -95,7 +95,8 @@ export default {
   }
 
   main {
-    flex-grow: 1;
+    flex: 1;
+    width: 100%;
     padding-left: 1em;
   }
 </style>

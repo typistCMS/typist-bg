@@ -7,15 +7,17 @@
         <button @click="getPosts(1)" v-if="isTrashed" class="pure-button">Published</button>
         <button @click="showDeleted" class="pure-button" v-else>Trashed</button>
       </div>
-      <category-selector v-model="categoryId"></category-selector>
+      <category-selector v-model="categoryId" hint="All Category" allow-null="true"></category-selector>
     </div>
     <table class="pure-table">
       <thead>
         <tr>
           <th>#</th>
           <th>Name</th>
+          <th>Category</th>
+          <th>Last Edit By</th>
           <th>Created At</th>
-          <th>Last Update</th>
+          <th>Last Update At</th>
           <th>Action</th>
         </tr>
        </thead>
@@ -23,6 +25,8 @@
          <tr v-for="(post, index) in posts" v-bind:key="post.id">
            <td> {{ post.id }} </td>
            <td> {{ post.title }} </td>
+           <td> {{ post.category_name }} </td>
+           <td> {{ post.last_edit_by }} </td>
            <td> {{ post.created_at }} </td>
            <td> {{ post.updated_at }} </td>
            <td v-if="isTrashed">
@@ -34,7 +38,7 @@
            <td v-else>
              <div class="pure-button-group" role="group">
                <button class="pure-button" @click="edit(post.id)">Edit</button>
-               <button class="pure-button">Delete</button>
+               <button class="pure-button" @click="deletePost(index, post.id)">Delete</button>
              </div>
            </td>
          </tr>
@@ -42,7 +46,8 @@
       </table>
       <div class="pure-button-group">
         <button class="pure-button">&lt;&lt;</button>
-        <router-link class="pure-button" tag="button" :to="'/posts/' + n" v-for="n in 10" :key="n">{{ n }}</router-link>
+        <router-link class="pure-button" tag="button" :to="'/posts/' + n"
+          v-for="n in Math.ceil(this.count / 10)" :key="n">{{ n }}</router-link>
         <button class="pure-button">&gt;&gt;</button>
       </div>
   </div>
@@ -57,6 +62,7 @@ export default {
     return {
       isTrashed: false,
       categoryId: null,
+      count: 0,
       posts: []
     }
   },
@@ -88,6 +94,7 @@ export default {
       this.$http.get('/posts/' + page + filterUrlStr, {
       }).then((res) => {
         this.posts = res.data.posts
+        this.count = res.data.count
         loader.hide()
       })
     },
@@ -105,6 +112,9 @@ export default {
         }
       })
     },
+    deletePermanantely (id) {
+      console.log(id)
+    },
     showDeleted () {
       this.posts = []
       this.isTrashed = true
@@ -112,6 +122,12 @@ export default {
     },
     edit (id) {
       this.$router.push('/post/' + id)
+    },
+    deletePost (index, id) {
+      this.$http.delete('/post/' + id).then(({data}) => {
+        console.log(data)
+        this.posts.splice(index, 1)
+      })
     }
   }
 }
