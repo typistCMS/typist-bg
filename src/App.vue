@@ -1,24 +1,31 @@
 <template>
   <div id="app">
-    <button class="toggle" @click="sidebar = !sidebar"></button>
-    <div class="pure-menu sidebar" :class="{ 'sidebar-show': sidebar }">
-      <router-link tag="span" class="pure-menu-heading" to="/">Dashboard</router-link>
-      <ul class="pure-menu-list">
-        <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/categories">
-            <a class="pure-menu-link">Categories</a>
-        </router-link>
-        <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/posts">
-            <a class="pure-menu-link">Posts</a>
-        </router-link>
-        <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/comments">
-            <a class="pure-menu-link">Comments</a>
-        </router-link>
-      </ul>
+    <div id="loading" v-if="!$auth.ready()">
+      loading...
     </div>
-    <main>
-      <router-view></router-view>
-    </main>
-    <div class="sidebar-mask" v-show="sidebar" @click="sidebar = !sidebar"></div>
+    <div id="main" v-else>
+      <button class="toggle" @click="sidebar = !sidebar"></button>
+      <div class="pure-menu sidebar" :class="{ 'sidebar-show': sidebar }">
+        <router-link tag="span" class="pure-menu-heading" to="/">Dashboard</router-link>
+        <ul class="pure-menu-list">
+          <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/categories">
+              <a class="pure-menu-link">Categories</a>
+          </router-link>
+          <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/posts/1">
+              <a class="pure-menu-link">Posts</a>
+          </router-link>
+          <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/comments">
+              <a class="pure-menu-link">Comments</a>
+          </router-link>
+          <li class="pure-menu-item" @click="this.logout"><a class="pure-menu-link">Logout</a></li>
+        </ul>
+      </div>
+      <main>
+        <router-view></router-view>
+      </main>
+      <notifications group="notify" position="top center" />
+      <div class="sidebar-mask" v-show="sidebar" @click="sidebar = !sidebar"></div>
+    </div>
   </div>
 </template>
 
@@ -29,10 +36,13 @@ export default {
       sidebar: false
     }
   },
-  created () {
-    if (!localStorage.getItem('token') && this.$route.name !== 'Login') {
-      console.log('tkn')
-      this.$router.push('/login')
+  methods: {
+    logout () {
+      this.$auth.logout({
+        success () {
+          this.$router.push('login')
+        }
+      })
     }
   }
 }

@@ -13,6 +13,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Ex</th>
           <th>Name</th>
           <th>Category</th>
           <th>Last Edit By</th>
@@ -24,6 +25,7 @@
        <tbody>
          <tr v-for="(post, index) in posts" v-bind:key="post.id">
            <td> {{ post.id }} </td>
+           <td> {{ post.expand_content }} </td>
            <td> {{ post.title }} </td>
            <td> {{ post.category_name }} </td>
            <td> {{ post.last_edit_by }} </td>
@@ -31,8 +33,8 @@
            <td> {{ post.updated_at }} </td>
            <td v-if="isTrashed">
              <div class="pure-button-group" role="group">
-               <button class="pure-button" click="permanantDelete">Delete Permanantly</button>
-               <button class="pure-button" click="recover" @click="restoreDeleted(index, post.id)">Recover</button>
+               <button class="pure-button" @click="permanantDelete(index, post.id)">Delete Permanantly</button>
+               <button class="pure-button" @click="restoreDeleted(index, post.id)">Recover</button>
              </div>
            </td>
            <td v-else>
@@ -112,7 +114,7 @@ export default {
         }
       })
     },
-    deletePermanantely (id) {
+    permanantDelete (index, id) {
       console.log(id)
     },
     showDeleted () {

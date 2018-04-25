@@ -56,6 +56,7 @@ Vue.component('posts-table-row', {
     editCategory () {
       this.$http.put('category/' + this.category.id, { name: this.category.name }).then(({data}) => {
         console.log('category updated')
+        this.edit = false
       })
     },
     deleteCategory () {

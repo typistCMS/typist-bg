@@ -5,8 +5,13 @@
       <input v-model="post.title" placeholder="Title" />
       <label for="category">Category</label>
       <category-selector v-model="post.category_id"></category-selector>
+      <input v-model="post.expand_content" type="checkbox">
+      <label for="expand_content">Expand Post</label>
       <mavon-editor :ishljs="true" v-model="post.content"/>
-      <button>Publish</button>
+      <div class="pure-button-group">
+        <button class="pure-button">Publish</button>
+        <button class="pure-button">Discard</button>
+      </div>
     </form>
     <div v-if="this.$route.params.id">
       <legend>Revisions</legend>
@@ -19,11 +24,19 @@
         </thead>
 
         <tbody>
-          <tr v-for="revision in revisions" v-bind:key="revision.id">
+          <tr
+            v-for="(revision, index) in revisions"
+            v-bind:key="revision.id"
+          >
             <td>{{ revision.id }}</td>
             <td>{{ revision.user_name }}</td>
             <td>{{ revision.created_at }}</td>
-            <td><button @click="rollbackRevision(revision.id)">Roll Back</button><button>Delete</button></td>
+            <td>
+              <div class="pure-button-group">
+                <button class="pure-button" @click="rollbackRevision(index, revision.id)">Roll Back</button>
+                <button class="pure-button" @click="deleteRevision(index, revision.id)">Delete</button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -34,7 +47,7 @@
 <script>
 import CategorySelector from '@/components/CategorySelector'
 export default {
-  components: {CategorySelector},
+  components: { CategorySelector },
   data () {
     return {
       post: {
@@ -45,7 +58,8 @@ export default {
         last_edit_by: null,
         revision_id: null,
         title: null,
-        updated_at: null
+        updated_at: null,
+        expand_content: false
       },
       revisions: []
     }
@@ -57,28 +71,44 @@ export default {
   },
   methods: {
     retrivePost () {
+      let loader = this.$loading.show()
       this.$http.get('post/' + this.$route.params.id).then((response) => {
         this.post = response.data
         this.retriveRevisions()
+        loader.hide()
       }).catch(({response}) => {
       })
     },
     retriveRevisions () {
+      let loader = this.$loading.show()
       this.$http.get('post/' + this.post.id + '/revisions').then((response) => {
         this.revisions = response.data
+        loader.hide()
       }).catch((error) => {
         console.log(error)
       })
     },
+    notify () {
+      this.$notify({
+        type: 'success',
+        group: 'notify',
+        text: 'Post Published'
+      })
+    },
     publish () {
+      let loader = this.$loading.show()
       if (this.post.id) {
         this.$http.put('post/' + this.post.id, this.post).then(({data}) => {
-          this.post = data
-          this.revisions.unshift({
-            'id': this.post.revision_id,
-            'user_name': this.post.last_edit_by,
-            'created_at': this.post.updated_at
-          })
+          if (this.post.revision_id !== data.revision_id) {
+            this.post = data
+            this.revisions.unshift({
+              'id': this.post.revision_id,
+              'user_name': this.post.last_edit_by,
+              'created_at': this.post.updated_at
+            })
+            this.notify()
+          }
+          loader.hide()
         }).catch(({response}) => {
           if (response.status === 401) {
             this.$router.push('/login')
@@ -87,12 +117,14 @@ export default {
       } else {
         this.$http.post('posts', this.post).then(({data}) => {
           this.post = data
-          window.history.pushState(null, 'Typist', '/post/' + this.post.id)
           this.revisions.unshift({
             'id': this.post.revision_id,
             'user_name': this.post.last_edit_by,
             'created_at': this.post.updated_at
           })
+          loader.hide()
+          this.$router.push('/post/' + data.id)
+          this.notify()
         }).catch(({response}) => {
           if (response.status === 401) {
             this.$router.push('/login')
@@ -100,17 +132,47 @@ export default {
         })
       }
     },
-    rollbackRevision (id) {
+    rollbackRevision (index, id) {
+      let loader = this.$loading.show()
       this.$http.put('post/' + this.post.id + '/revision/' + id, '').then((response) => {
         this.post = response.data
+        let revisions = this.revisions.splice(index, 1)
+        this.revisions.unshift(revisions[0])
+        loader.hide()
+        this.$notify({
+          group: 'notify',
+          text: 'Revision is rollback to ' + id
+        })
       }).catch((error) => {
         console.log(error)
+      })
+    },
+    deleteRevision (index, id) {
+      let loader = this.$loading.show()
+      this.$http.delete('post/' + this.post.id + '/revision/' + id, '').then((response) => {
+        this.revisions.splice(index, 1)
+        loader.hide()
+        this.$notify({
+          group: 'notify',
+          text: 'Revision deleted ' + id
+        })
+      }).catch((error) => {
+        loader.hide()
+        this.$notify({
+          group: 'notify',
+          type: error,
+          text: error.response.data.msg
+        })
       })
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+tr:first-child td {
+  background-color: #f3eaf9;
+  color: #b57edc;
+}
 
 </style>

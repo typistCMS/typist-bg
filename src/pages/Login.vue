@@ -13,7 +13,6 @@
 
 <style>
   .login-wrapper {
-    background-image: url("https://www.vitacost.com/blog/wp-content/uploads/2016/05/Why-You-Need-More-Lavender-in-Your-Life-e1462955823730.jpg");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -50,15 +49,10 @@ export default {
   },
   methods: {
     login () {
-      this.$http.post('user/token', {
-        'name': this.name,
-        'password': this.password
-      }).then((response) => {
-        localStorage.setItem('token', response.data.token)
-        this.$router.push('/')
-      }).catch((error) => {
-        this.msg = error.response.data.msg
-        this.password = null
+      this.$auth.login({
+        data: { name: this.name, password: this.password }
+      }).catch(({response}) => {
+        this.msg = response.data.msg
       })
     }
   }
