@@ -30,7 +30,7 @@
           >
             <td>{{ revision.id }}</td>
             <td>{{ revision.user_name }}</td>
-            <td>{{ revision.created_at }}</td>
+            <td>{{ revision.created_at || localTimeDetail }}</td>
             <td>
               <div class="pure-button-group">
                 <button class="pure-button" @click="rollbackRevision(index, revision.id)">Roll Back</button>

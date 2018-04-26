@@ -1,7 +1,6 @@
 <template>
   <div class="login-wrapper">
     <div class="login">
-      <div class="msg" v-if="msg"> {{ msg }} </div>
       <form class="pure-form pure-form-stacked" @submit.prevent="login" method="POST">
         <input v-model="name" placeholder="Username / Email" autocomplete="email" required name email/>
         <input v-model="password" placeholder="Password" type="password" autocomplete="current-password" required/>
@@ -43,16 +42,25 @@ export default {
   data () {
     return {
       'name': null,
-      'password': null,
-      'msg': null
+      'password': null
     }
   },
   methods: {
     login () {
       this.$auth.login({
         data: { name: this.name, password: this.password }
+      }).then(({data}) => {
+        this.$notify({
+          type: 'success',
+          group: 'notify',
+          text: 'Login successful'
+        })
       }).catch(({response}) => {
-        this.msg = response.data.msg
+        this.$notify({
+          type: 'error',
+          group: 'notify',
+          text: response.data.msg
+        })
       })
     }
   }

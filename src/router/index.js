@@ -6,6 +6,7 @@ const Posts = () => import('@/pages/Dashboard/Posts')
 const Post = () => import('@/pages/Dashboard/Post')
 const Overview = () => import('@/pages/Dashboard/Overview')
 const Categories = () => import('@/pages/Dashboard/Categories')
+const Comments = () => import('@/pages/Dashboard/Comments')
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -42,6 +43,12 @@ export default new Router({
       path: '/categories',
       name: 'Categories',
       component: Categories,
+      meta: { auth: true }
+    },
+    {
+      path: '/comments/:page',
+      name: 'Comments',
+      component: Comments,
       meta: { auth: true }
     }
   ]

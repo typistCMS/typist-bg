@@ -22,7 +22,13 @@
             </div>
           </td>
         </tr>
-        <posts-table-row v-for="category in categories" :category="category" :key="category.id"></posts-table-row>
+        <posts-table-row
+          v-for="(category, index) in categories"
+          :category="category"
+          :key="category.id"
+          :index="index"
+        >
+        </posts-table-row>
       </tbody>
     </table>
   </div>
@@ -41,12 +47,12 @@ Vue.component('posts-table-row', {
         <div class="pure-button-group">
           <button class="pure-button" @click="edit = true" v-if="!edit">Edit</button>
           <button class="pure-button" @click="edit = false" v-else>Cancel</button>
-          <button class="pure-button" @click="editCategory(category.id)" v-if="edit">Save</button>
-          <button class="pure-button" @click="deleteCategory(category.id)" v-else>Delete</button>
+          <button class="pure-button" @click="editCategory()" v-if="edit">Save</button>
+          <button class="pure-button" @click="deleteCategory(index)" v-else>Delete</button>
         </div>
       </td>
     </tr>`,
-  props: ['category'],
+  props: ['category', 'index'],
   data () {
     return {
       edit: false
@@ -55,13 +61,22 @@ Vue.component('posts-table-row', {
   methods: {
     editCategory () {
       this.$http.put('category/' + this.category.id, { name: this.category.name }).then(({data}) => {
-        console.log('category updated')
+        this.$notify({
+          'type': 'success',
+          'text': 'Category renamed',
+          'group': 'notify'
+        })
         this.edit = false
       })
     },
-    deleteCategory () {
+    deleteCategory (index) {
       this.$http.delete('category/' + this.category.id).then(({data}) => {
-        console.log(data + 'deleted')
+        this.$notify({
+          'type': 'success',
+          'text': 'Category deleted',
+          'group': 'notify'
+        })
+        this.$parent.categories.splice(index, 1)
       })
     }
   }
@@ -83,6 +98,11 @@ export default {
       }).then(({data}) => {
         this.categories.push(data)
         this.addCategory = false
+        this.$notify({
+          'type': 'success',
+          'text': 'Category ' + this.name + ' created',
+          'group': 'notify'
+        })
       })
     }
   }

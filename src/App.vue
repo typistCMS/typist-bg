@@ -14,7 +14,7 @@
           <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/posts/1">
               <a class="pure-menu-link">Posts</a>
           </router-link>
-          <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/comments">
+          <router-link class="pure-menu-item" active-class="pure-menu-active" tag="li" to="/comments/1">
               <a class="pure-menu-link">Comments</a>
           </router-link>
           <li class="pure-menu-item" @click="this.logout"><a class="pure-menu-link">Logout</a></li>
@@ -41,6 +41,11 @@ export default {
       this.$auth.logout({
         success () {
           this.$router.push('login')
+          this.$notify({
+            type: 'success',
+            text: 'You\'ve been logged out',
+            group: 'notify'
+          })
         }
       })
     }
@@ -72,7 +77,8 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 32px;
+    width: 32px;
     background-color: #b57edc;
     border: 0;
     outline: none;
@@ -80,8 +86,15 @@ export default {
 
   .sidebar-mask {
     position: fixed;
+    top: 0;
     height: 100vh;
     width: 100vw;
+  }
+
+  main {
+    flex: 1;
+    width: calc(100vw - 256px - 2em);
+    padding-left: 1em;
   }
 
   @media screen and (min-width: 768px) {
@@ -95,18 +108,11 @@ export default {
     }
 
     main {
-      margin-left: 256px;
-      padding: 1em;
+      padding-left: calc(256px + 1em);
     }
   }
 
   #app {
     display: flex;
-  }
-
-  main {
-    flex: 1;
-    width: 100%;
-    padding-left: 1em;
   }
 </style>

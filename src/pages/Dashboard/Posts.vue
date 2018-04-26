@@ -9,11 +9,10 @@
       </div>
       <category-selector v-model="categoryId" hint="All Category" allow-null="true"></category-selector>
     </div>
-    <table class="pure-table">
+    <table class="pure-table posts-table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Ex</th>
+          <th></th>
           <th>Name</th>
           <th>Category</th>
           <th>Last Edit By</th>
@@ -24,8 +23,10 @@
        </thead>
        <tbody>
          <tr v-for="(post, index) in posts" v-bind:key="post.id">
-           <td> {{ post.id }} </td>
-           <td> {{ post.expand_content }} </td>
+           <td>
+             <i class="material-icons" v-if="post.expand_content">format_quote</i>
+             <i class="material-icons" v-else>description</i>
+           </td>
            <td> {{ post.title }} </td>
            <td> {{ post.category_name }} </td>
            <td> {{ post.last_edit_by }} </td>
@@ -115,7 +116,10 @@ export default {
       })
     },
     permanantDelete (index, id) {
-      console.log(id)
+      this.$http.delete('/post/trashed/' + id).then(({data}) => {
+        console.log(data)
+        this.posts.splice(index, 1)
+      })
     },
     showDeleted () {
       this.posts = []
@@ -144,5 +148,9 @@ export default {
 div.posts {
   display: flex;
   flex-direction: column;
+}
+
+.posts-table {
+  width: 100%;
 }
 </style>
