@@ -93,7 +93,6 @@ export default {
 
   main {
     flex: 1;
-    width: calc(100vw - 256px - 2em);
     padding-left: 1em;
   }
 
@@ -109,6 +108,7 @@ export default {
 
     main {
       padding-left: calc(256px + 1em);
+      width: calc(100vw - 256px - 2em);
     }
   }
 

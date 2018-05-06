@@ -7,7 +7,7 @@
       <category-selector v-model="post.category_id"></category-selector>
       <input v-model="post.expand_content" type="checkbox">
       <label for="expand_content">Expand Post</label>
-      <mavon-editor :ishljs="true" v-model="post.content"/>
+      <mavon-editor class="no-pure" :ishljs="true" :toolbars="toolBars" v-model="post.content"/>
       <div class="pure-button-group">
         <button class="pure-button">Publish</button>
         <button class="pure-button">Discard</button>
@@ -15,7 +15,7 @@
     </form>
     <div v-if="this.$route.params.id">
       <legend>Revisions</legend>
-      <table class="pure-table">
+      <table class="pure-table rev-table">
         <thead>
           <th>#</th>
           <th>Author</th>
@@ -61,7 +61,24 @@ export default {
         updated_at: null,
         expand_content: false
       },
-      revisions: []
+      revisions: [],
+      toolBars: {
+        link: true, // 链接
+        imagelink: true, // 图片链接
+        code: true, // code
+        table: true, // 表格
+        fullscreen: true, // 全屏编辑
+        readmodel: true, // 沉浸式阅读
+        undo: true, // 上一步
+        redo: true, // 下一步
+        trash: true, // 清空
+        navigation: true, // 导航目录
+        alignleft: true, // 左对齐
+        aligncenter: true, // 居中
+        alignright: true, // 右对齐
+        subfield: true, // 单双栏模式
+        preview: true // 预览
+      }
     }
   },
   created () {
@@ -169,10 +186,13 @@ export default {
 }
 </script>
 
-<style scoped>
-tr:first-child td {
+<style>
+.rev-table tr:first-child td {
   background-color: #f3eaf9;
   color: #b57edc;
 }
 
+.auto-textarea-wrapper .auto-textarea-input.no-border {
+  box-shadow: none;
+}
 </style>

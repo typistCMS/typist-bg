@@ -108,9 +108,17 @@ export default {
   padding: 1em 0;
 }
 
+.overview-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-fragments {
+  flex: 1;
+}
 @media screen and (min-width: 767px) {
   .overview-wrapper {
-    display: flex;
+    flex-direction: row;
   }
 
   .overview-wrapper aside {
@@ -118,8 +126,5 @@ export default {
     min-width: 300px;
   }
 
-  .recent-fragments {
-    flex: 1;
-  }
 }
 </style>
